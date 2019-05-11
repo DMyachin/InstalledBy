@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Simple App Checker</string>
+    <string name="appNameText">Name:</string>
+    <string name="appPackageText">Package:</string>
+    <string name="appInstalledToText">Installed to:</string>
+    <string name="appInstalledByText">Installed by:</string>
+    <string name="application_icon">Application Icon</string>
+
+    <!--<string name="verifyOk">✔</string>-->
+    <!--<string name="verifyFail">✘</string>-->
+</resources>

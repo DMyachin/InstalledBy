@@ -42,12 +42,13 @@ class AppInfoAdapter extends RecyclerView.Adapter<AppInfoAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         final CardView cardView = holder.cv;
         final Context context = cardView.getContext();
-        Resources res = context.getResources();
-        ImageView appIcon = cardView.findViewById(R.id.appIconIm);
-        TextView appName = cardView.findViewById(R.id.appNameTv);
+        final Resources res = context.getResources();
+
+        final ImageView appIcon = cardView.findViewById(R.id.appIconIm);
+        final TextView appName = cardView.findViewById(R.id.appNameTv);
         final TextView appPackage = cardView.findViewById(R.id.packageNameTv);
-        TextView installPath = cardView.findViewById(R.id.installPathTv);
-        TextView installedBy = cardView.findViewById(R.id.installedByTv);
+        final TextView installPath = cardView.findViewById(R.id.installPathTv);
+        final TextView installedBy = cardView.findViewById(R.id.installedByTv);
 
         appIcon.setImageDrawable(data.get(position).applicationInfo.loadIcon(packageManager));
 

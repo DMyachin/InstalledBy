@@ -2,9 +2,8 @@ package com.umnik.installedby;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,15 +17,16 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS;
 
 class AppInfoAdapter extends RecyclerView.Adapter<AppInfoAdapter.ViewHolder> {
     private final String TAG = "AppInfoAdapter";
-    private ArrayList<PackageInfo> data;
-    private PackageManager packageManager;
+    private ArrayList<HashMap<String, Object>> data;
+//    private PackageManager packageManager;
 
-    AppInfoAdapter(ArrayList<PackageInfo> data) {
+    AppInfoAdapter(ArrayList<HashMap<String, Object>> data) {
         this.data = data;
     }
 
@@ -34,7 +34,7 @@ class AppInfoAdapter extends RecyclerView.Adapter<AppInfoAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         CardView cardView = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_app_info_card, parent, false);
-        packageManager = cardView.getContext().getPackageManager();
+//        packageManager = cardView.getContext().getPackageManager();
         return new ViewHolder(cardView);
     }
 
@@ -50,25 +50,25 @@ class AppInfoAdapter extends RecyclerView.Adapter<AppInfoAdapter.ViewHolder> {
         final TextView installPath = cardView.findViewById(R.id.installPathTv);
         final TextView installedBy = cardView.findViewById(R.id.installedByTv);
 
-        appIcon.setImageDrawable(data.get(position).applicationInfo.loadIcon(packageManager));
+        appIcon.setImageDrawable((Drawable) data.get(position).get("icon"));
+        appName.setText((String) data.get(position).get("label"));
+        appPackage.setText((String) data.get(position).get("packageName"));
+        installPath.setText((String) data.get(position).get("installedTo"));
 
-        appName.setText(String.format("%s %s", res.getString(R.string.appNameText), data.get(position).applicationInfo.loadLabel(packageManager)));
-        appPackage.setText(String.format("%s %s", res.getString(R.string.appPackageText), data.get(position).packageName));
-        installPath.setText(String.format("%s %s", res.getString(R.string.appInstalledToText), data.get(position).applicationInfo.sourceDir));
-
-        String source = packageManager.getInstallerPackageName(data.get(position).packageName);
+        String source = (String) data.get(position).get("installedBy");
+//        String source = packageManager.getInstallerPackageName(data.get(position).packageName);
         if (source != null && source.equals("com.android.vending")) {
             installedBy.setTextColor(res.getColor(R.color.verifyOk));
         } else {
             installedBy.setTextColor(res.getColor(R.color.verifyFail));
         }
-
+//
         installedBy.setText(String.format("%s %s", res.getString(R.string.appInstalledByText), source));
-
+//
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String packageName = data.get(position).packageName;
+                String packageName = (String) data.get(position).get("packageName");
 
                 Log.d(TAG, String.format("onClick: %s", packageName));
                 Intent appInfo = new Intent(ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + packageName));

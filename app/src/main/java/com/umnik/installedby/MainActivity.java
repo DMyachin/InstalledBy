@@ -1,7 +1,5 @@
 package com.umnik.installedby;
 
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,12 +8,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AppUpdatedListener {
     private final String TAG = "Main Screen";
-    private PackageManager packageManager;
-    private ArrayList<PackageInfo> mDataSet = new ArrayList<>();
+    private InstalledApps mApps;
+    private ArrayList<HashMap<String, Object>> mDataSet = new ArrayList<>();
     private RecyclerView.Adapter mAdapter;
 
 
@@ -24,8 +22,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        packageManager = getPackageManager();
-        getInstalledApps();
+        mApps = new InstalledApps(this);
+        mApps.setAppListUpdatedListener(this);
+        mApps.getInstalledPackages();
 
         createRecyclerView();
         setRefreshLayout();
@@ -36,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getInstalledApps();
+                mApps.getInstalledPackages();
                 mAdapter.notifyDataSetChanged();
                 refreshLayout.setRefreshing(false);
             }
@@ -54,10 +53,10 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
     }
 
-    private void getInstalledApps() {
-        List<PackageInfo> installedApps = packageManager.getInstalledPackages(0);
-        mDataSet.clear();
-        mDataSet.addAll(installedApps);
-    }
 
+    @Override
+    public void installedAppListUpdated(ArrayList<HashMap<String, Object>> packageInfos) {
+        mDataSet.clear();
+        mDataSet.addAll(packageInfos);
+    }
 }
